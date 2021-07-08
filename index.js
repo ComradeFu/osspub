@@ -1,4 +1,3 @@
-
 const fs = require("fs")
 const path = require("path")
 const OSS = require("ali-oss")
@@ -164,9 +163,6 @@ async function exec()
     //upload one by one
     for (let one of wait_files)
     {
-        if (!fs.existsSync(one.file))
-            continue
-
         let sub_pros = []
         oss_put(one.file, sub_pros)
 

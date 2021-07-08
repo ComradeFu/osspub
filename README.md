@@ -67,7 +67,7 @@ you can configure this concurrent number by setting the 'batch' value, the defau
 }
 ```
 
-Osspub also provides the ability to remove the prefix path.
+Osspub provides the ability to remove the prefix path.
 ```json
 {
   "remove_prefix": true
