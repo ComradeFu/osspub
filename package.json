@@ -1,0 +1,25 @@
+{
+  "name": "osspub",
+  "version": "1.0.0",
+  "description": "a npm tool that can upload your files or directories to oss-aliyun.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node tests/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ComradeFu/osspub.git"
+  },
+  "keywords": [
+    "oss"
+  ],
+  "author": "fuguangze",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ComradeFu/osspub/issues"
+  },
+  "homepage": "https://github.com/ComradeFu/osspub#readme",
+  "dependencies": {
+    "ali-oss": "^6.15.2"
+  }
+}
