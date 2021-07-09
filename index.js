@@ -13,7 +13,7 @@ function read_conf()
 {
     try
     {
-        conf = require("./.osspub")
+        conf = require(path.resolve(".osspub"))
 
         //black list
         if (conf.excludes)
@@ -32,6 +32,7 @@ function read_conf()
     }
     catch (e)
     {
+        console.error(e)
         throw new Error(".osspub.json file must be given in root path. see README.md.")
     }
 
@@ -115,6 +116,8 @@ async function __oss_put(file_path)
             global.console.error(`file[${file_path}] will retry`)
         }
     }
+    if (!ok)
+        throw new Error(`push file:[${file_path}] fail`)
 
     ++oss_counter
     log(`pushed file:[${file_path}] to oss:[${oss_path}]`)

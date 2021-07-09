@@ -1,6 +1,6 @@
 {
   "name": "osspub",
-  "version": "1.0.3",
+  "version": "1.0.7",
   "description": "a npm tool that can upload your files or directories to oss-aliyun.",
   "main": "index.js",
   "scripts": {
