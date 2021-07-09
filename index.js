@@ -60,7 +60,8 @@ function check_pri(file)
     if (!conf.files_pri)
         return
 
-    return conf.files_pri[file]
+    let relative = path.relative(base_file_path, file)
+    return conf.files_pri[relative]
 }
 
 function sleep(ms)
@@ -89,7 +90,8 @@ async function __oss_put(file_path)
     //headers inject
     if (conf.headers)
     {
-        let headers = conf.headers[file_path] || conf.headers.default
+        let relative = path.relative(base_file_path, file_path)
+        let headers = conf.headers[relative] || conf.headers.default
         if (headers)
         {
             tags.headers = headers
