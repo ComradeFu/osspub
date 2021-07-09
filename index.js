@@ -7,7 +7,7 @@ let conf = {}
 let client = undefined
 let base_oss_path = undefined
 let base_file_path = undefined
-
+let oss_counter = 0
 
 function read_conf()
 {
@@ -63,6 +63,14 @@ function check_pri(file)
     return conf.files_pri[file]
 }
 
+function sleep(ms)
+{
+    return new Promise((resolve, reject) =>
+    {
+        setTimeout(resolve, ms)
+    })
+}
+
 async function __oss_put(file_path)
 {
     let oss_path = undefined
@@ -88,7 +96,25 @@ async function __oss_put(file_path)
         }
     }
 
-    await client.put(oss_path, file_path, tags)
+    let retry = 0
+    let ok = false
+    while (!ok && retry < 3)
+    {
+        try
+        {
+            await client.put(oss_path, file_path, tags)
+
+            ok = true
+        }
+        catch (e)
+        {
+            global.console.error(`pushing file[${file_path}]`, e)
+            ++retry
+            global.console.error(`file[${file_path}] will retry`)
+        }
+    }
+
+    ++oss_counter
     log(`pushed file:[${file_path}] to oss:[${oss_path}]`)
 }
 
@@ -115,7 +141,7 @@ function oss_put(file_path, pros, white_pris = [], ignore_pri = true, nest = 0)
     let st = fs.statSync(file_path)
     if (st.isFile())
     {
-        pros.push(__oss_put(file_path));
+        pros.push(__oss_put.bind(undefined, file_path));
         return
     }
     else if (st.isDirectory())
@@ -142,6 +168,10 @@ async function exec_pros(pros)
     while (pros.length > 0)
     {
         let batch_pros = pros.splice(0, batch)
+        batch_pros = batch_pros.map((one) =>
+        {
+            return one()
+        })
         await Promise.all(batch_pros)
     }
 }
@@ -200,18 +230,21 @@ async function main()
 
     client = new OSS({
         endpoint, accessKeyId, accessKeySecret, bucket,
-        secure: true
+        secure: true,
+        // timeout: 180 * 1000, //3mins 
     })
 
     console.log(`pushing oss, endpoint:${endpoint}, bucket:${bucket}`)
     console.log(`=====================================================`)
 
+    let start = Date.now()
     base_oss_path = path.normalize(base_oss_path)
     base_file_path = path.normalize(base_file_path)
     await exec()
-
+    let stop = Date.now()
     console.log(`=====================================================`)
-    console.log(`push oss finish.`)
+    console.log(`push oss finish. files count:${oss_counter}, use_time:${(stop - start) / 1000} secs`)
+    oss_counter = 0
 }
 
 main()
