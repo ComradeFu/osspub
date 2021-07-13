@@ -89,4 +89,14 @@ The tool also provides a tagging function. You can set specific tags for special
 }
 ```
 
+MIME configurations are similar to nginx configurations, see the following example.
+```json
+{
+  "mime": {
+      "types": {
+          ".sk": "text/plain"
+      }
+  }
+}
+```
 Hope you enjoy it.

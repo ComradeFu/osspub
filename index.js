@@ -28,7 +28,7 @@ function read_conf()
         }
 
         conf.nest = conf.nest || 20
-        conf.batch = conf.batch || 10
+        conf.batch = conf.batch || 5
     }
     catch (e)
     {
@@ -86,7 +86,9 @@ async function __oss_put(file_path)
         oss_path = `${base_oss_path}/${file_path}`
     }
 
-    let tags = {}
+    let tags = {
+        headers: {}
+    }
 
     //headers inject
     if (conf.headers)
@@ -95,8 +97,19 @@ async function __oss_put(file_path)
         let headers = conf.headers[relative] || conf.headers.default
         if (headers)
         {
-            tags.headers = headers
+            Object.assign(tags.headers, headers)
         }
+    }
+
+    let ext = path.extname(file_path)
+    if (conf.mime && conf.mime.types[ext])
+    {
+        console.log(`ext:${ext}, file_path:${file_path}`)
+        tags.headers["Content-Type"] = conf.mime.types[ext]
+    }
+    else
+    {
+        tags.headers["Content-Type"] = undefined
     }
 
     let retry = 0

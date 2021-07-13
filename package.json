@@ -20,6 +20,6 @@
   },
   "homepage": "https://github.com/ComradeFu/osspub#readme",
   "dependencies": {
-    "ali-oss": "^6.15.2"
+    "ali-oss": "^6.16.0"
   }
 }
