@@ -104,7 +104,7 @@ async function __oss_put(file_path)
     let ext = path.extname(file_path)
     if (conf.mime && conf.mime.types[ext])
     {
-        console.log(`ext:${ext}, file_path:${file_path}`)
+        log(`ext:${ext}, file_path:${file_path}`)
         tags.headers["Content-Type"] = conf.mime.types[ext]
     }
     else
@@ -222,12 +222,7 @@ async function main()
 {
     read_conf()
 
-    let { endpoint, accessKeyId, accessKeySecret } = conf
-    if (!endpoint)
-    {
-        throw new Error("endpoit must be given in configuration. see README.md.")
-    }
-
+    let { accessKeyId, accessKeySecret } = conf
     if (!accessKeyId)
     {
         throw new Error("accessKeyId must be given in configuration. see README.md.")
@@ -246,13 +241,34 @@ async function main()
         throw new Error("invalid arguments count. usage: osspub ${BUCKET_NAME} ${OSS_PATH} ${LOCAL_PATH}")
     }
 
+    let list_client = new OSS({
+        accessKeyId, accessKeySecret, bucket,
+        secure: true,
+        // timeout: 180 * 1000, //3mins 
+    }) 
+
+    let list = await list_client.listBuckets()
+    list = list.buckets
+
+    let bucket_info = undefined
+    for (let one of list)
+        if (one.name == bucket)
+        {
+            bucket_info = one
+            break
+        }
+
+    if (!bucket_info)
+        throw new Error(`Can't find bucket :${bucket}`)
+    
+    let region = bucket_info.region
     client = new OSS({
-        endpoint, accessKeyId, accessKeySecret, bucket,
+        region, accessKeyId, accessKeySecret, bucket,
         secure: true,
         // timeout: 180 * 1000, //3mins 
     })
 
-    console.log(`pushing oss, endpoint:${endpoint}, bucket:${bucket}`)
+    console.log(`pushing oss, region:${region}, bucket:${bucket}`)
     console.log(`=====================================================`)
 
     let start = Date.now()

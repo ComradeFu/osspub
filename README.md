@@ -1,12 +1,11 @@
 # osspub
 a npm tool that can upload files or directories to aliyun-oss server.
 
-Please prepare an .osspub.json configuration file to configure your Endpoint, Appkey, and AppSecret.
+Please prepare an .osspub.json configuration file to configure your Appkey, and AppSecret.
 
 .osspub.json file
 ```json
 {
-  "endpoint": "oss-cn-shenzhen.aliyuncs.com",
   "accessKeyId": "yourkeyid",
   "accessKeySecret": "yourkeysecret",
 }
